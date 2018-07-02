@@ -4,12 +4,13 @@ MAINTAINER Giorgio Regni <gr@scality.com>
 WORKDIR /usr/src/app
 
 # Keep the .git directory in order to properly report version
+RUN apt-get update \
+    && apt-get install -y jq python git build-essential libssl-dev --no-install-recommends
+
 COPY ./package.json .
 
-RUN apt-get update \
-    && apt-get install -y jq python git build-essential --no-install-recommends \
-    && npm install --production \
-    && apt-get autoremove --purge -y python git build-essential \
+RUN npm install --production --unsafe-perm \
+    && apt-get autoremove --purge -y python git build-essential libssl-dev \
     && rm -rf /var/lib/apt/lists/* \
     && npm cache clear \
     && rm -rf ~/.node-gyp \
